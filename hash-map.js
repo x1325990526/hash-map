@@ -16,6 +16,47 @@ export default class HashMap {
 
         return hashCode;
     } 
+    set(key, value) {
+        let temp = this.buckets[this.hash(key)];
+        if(temp === null){
+            this.buckets[this.hash(key)] = new Node(key, value);
+            return;
+        }
+        while (temp !== null) {
+            if(temp.key === key) {
+                temp.value = value;
+                return;
+            }
+            temp = temp.next;
+        }
+        this.size++;
+        if((this.size / this.capacity) > this.load) this.resize(); 
+        
+    }
+
+    resize(){
+
+    }
+
+    get(key) {
+        let temp = this.buckets[this.hash(key)];
+        if(temp === null) return;
+        while (temp !== null) {
+            if(temp.key === key) return temp.value;
+            temp = temp.next;
+        }
+        return;
+
+    }
+    has(key) {
+        let temp = this.buckets[this.hash(key)];
+        if(temp === null) return false;
+        while (temp !== null) {
+            if(temp.key === key) return true;
+            temp = temp.next;
+        }
+        return false;     
+    }
 }
 
 class Node {
