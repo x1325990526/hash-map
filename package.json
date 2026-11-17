@@ -1,0 +1,6 @@
+{
+  "name": "hash-map",
+  "private": true,
+  "type": "module",
+  "main": "hash-map.js"
+}

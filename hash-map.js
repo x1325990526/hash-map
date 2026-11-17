@@ -22,6 +22,13 @@ export default class HashMap {
         
     }
      resize() {
+        const all = this.entries();
+        this.capacity *= 2;
+        this.buckets = new Array(this.capacity).fill(null);
+        this.size = 0;
+        for (const [key, value] of all) {
+            this.insert(key, value);
+        }
 
     }
     insert(key, value) {
@@ -71,7 +78,7 @@ export default class HashMap {
         if(cur === null) return false;
         while (cur !== null) {
             if(cur.key === key) {
-                if(prev === null) this.buckets[index] = null;
+                if(prev === null) this.buckets[index] = cur.next;
                 else prev.next = cur.next;
                 this.size--;
                 return true;
@@ -85,7 +92,7 @@ export default class HashMap {
     length() {return this.size;}
 
     clear() {
-        this.capacity = 16;
+        this.capacity = 16
         this.buckets = new Array(this.capacity).fill(null);
         this.size = 0;
     }
@@ -102,6 +109,34 @@ export default class HashMap {
         }
 
         return allKeys;
+    }
+
+    values() {
+        let allValues = [];
+        for (let index = 0; index < this.buckets.length; index++) {
+            let temp = this.buckets[index];
+            while(temp !== null) {
+                allValues.push(temp.value);
+                temp = temp.next;
+            }
+            
+        }
+
+        return allValues;
+    }
+
+    entries() {
+        let allEntries = [];
+        for (let index = 0; index < this.buckets.length; index++) {
+            let temp = this.buckets[index];
+            while(temp !== null) {
+                allEntries.push([temp.key, temp.value]);
+                temp = temp.next;
+            }
+            
+        }
+
+        return allEntries;
     }
 }
 
