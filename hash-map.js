@@ -17,25 +17,32 @@ export default class HashMap {
         return hashCode;
     } 
     set(key, value) {
-        let temp = this.buckets[this.hash(key)];
+        this.insert(key, value);
+        if (this.size / this.capacity > this.load) this.resize();
+        
+    }
+     resize() {
+
+    }
+    insert(key, value) {
+        const index = this.hash(key);
+        let temp = this.buckets[index];
+
         if(temp === null){
-            this.buckets[this.hash(key)] = new Node(key, value);
+            this.buckets[index] = new Node(key, value);
+            this.size++;
             return;
         }
-        while (temp !== null) {
+        while(true) {
             if(temp.key === key) {
                 temp.value = value;
                 return;
             }
+            if(temp.next === null) break;
             temp = temp.next;
         }
+        temp.next = new Node(key, value);
         this.size++;
-        if((this.size / this.capacity) > this.load) this.resize(); 
-        
-    }
-
-    resize(){
-
     }
 
     get(key) {
@@ -56,6 +63,45 @@ export default class HashMap {
             temp = temp.next;
         }
         return false;     
+    }
+    remove(key) {
+        const index = this.hash(key);
+        let prev = null;
+        let cur = this.buckets[index];
+        if(cur === null) return false;
+        while (cur !== null) {
+            if(cur.key === key) {
+                if(prev === null) this.buckets[index] = null;
+                else prev.next = cur.next;
+                this.size--;
+                return true;
+            }
+            prev = cur;
+            cur = cur.next;
+        }
+        return false;
+    }
+
+    length() {return this.size;}
+
+    clear() {
+        this.capacity = 16;
+        this.buckets = new Array(this.capacity).fill(null);
+        this.size = 0;
+    }
+
+    keys() {
+        let allKeys = [];
+        for (let index = 0; index < this.buckets.length; index++) {
+            let temp = this.buckets[index];
+            while(temp !== null) {
+                allKeys.push(temp.key);
+                temp = temp.next;
+            }
+            
+        }
+
+        return allKeys;
     }
 }
 
